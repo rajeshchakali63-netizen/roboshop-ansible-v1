@@ -35,7 +35,7 @@
   - name: create app directory
     file:
       path: /app
-      state: present
+      state: directory
 
   - name: download catalogur application
     get_url:
