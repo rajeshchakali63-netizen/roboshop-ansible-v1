@@ -52,27 +52,10 @@
     community.general.npm:
       path: /app
 
-  - name: copy mongo repo
-    copy:
-      src: mongo.repo
-      dest: /etc/yum.repos.d/mongo.repo
-
-  - name: install mongodb client
-    dnf:
-      name: mongodb-mongosh
-      state: present
-
-  - name: check products loaded or not
-    command: mongosh --host "{{ mongodb_host }}" --quiet --eval 'db.getSiblingDB("user").products.countDocuments()'
-    register: product_count
-
-  - name: print product_count
-    debug:
-      msg: "{{ product_count }}"
-
-  - name: load the products
-    shell: mongosh --host "{{ mongodb_host }}" < /app/db/master-data.js
-    when: product_count.stdout | int == 0
+  - name: copy user service
+    template:
+      src: user.service.j2
+      dest: /etc/systemd/system/user.service
 
   - name: daemon reload
     systemd_service:
