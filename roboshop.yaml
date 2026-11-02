@@ -20,8 +20,12 @@
       region: us-east-1
 
     loop: "{{ instances }}"
-    when: action == create
+    when: action == "create"
     register: ec2_output
+
+  - name: print ec2 creation output
+    debug:
+      msg: "{{ ec2_output}}"
   
   # - name: create R53 records
   #   amazon.aws.route53:
