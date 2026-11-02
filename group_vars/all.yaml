@@ -1,2 +1,7 @@
 ansible_user: ec2-user
 ansible_password: DevOps321
+mongodb_host: mongodb.rajdaws92s.store
+redis_host: redis.rajdaws92s.store
+mysql_host: mysql.rajdaws92s.store
+rabbitmq_host: rabbitmq.rajdaws92s.store
+catalogue_host: catalogue.rajdaws92s.store
