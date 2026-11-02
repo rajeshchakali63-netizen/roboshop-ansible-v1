@@ -1,1 +1,86 @@
 - name: configure cart server
+  hosts: cart
+  become: yes
+  tasks:
+  - name: disable default nodejs
+    command: dnf module disable nodejs -y
+
+  - name: enable nodejs24
+    command: dnf module enable nodejs:24 -y
+
+  - name: install nodejs
+    dnf:
+      name: nodejs
+      state: present
+
+  - name: create roboshop system user
+    user:
+      name: roboshop
+      create_home: false
+      home: /app
+      system: true
+      shell: /sbin/nologin
+      comment: "roboshop system user"
+
+  - name: remove existing app directory
+    file:
+      path: /app
+      state: absent
+
+  - name: remove cart.zip
+    file:
+      path: /tmp/cart.zip
+      state: absent
+
+  - name: create app directory
+    file:
+      path: /app
+      state: directory
+
+  - name: download catalogur application
+    get_url:
+      url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/cart-v4.zip
+      dest: /tmp/cart.zip
+
+  - name: unzip cart
+    unarchive:
+      src: /tmp/cart.zip
+      dest: /app
+      remote_src: yes
+
+  - name: install dependencies
+    community.general.npm:
+      path: /app
+
+  - name: copy mongo repo
+    copy:
+      src: mongo.repo
+      dest: /etc/yum.repos.d/mongo.repo
+
+  - name: install mongodb client
+    dnf:
+      name: mongodb-mongosh
+      state: present
+
+  - name: check products loaded or not
+    command: mongosh --host "{{ mongodb_host }}" --quiet --eval 'db.getSiblingDB("cart").products.countDocuments()'
+    register: product_count
+
+  - name: print product_count
+    debug:
+      msg: "{{ product_count }}"
+
+  - name: load the products
+    shell: mongosh --host "{{ mongodb_host }}" < /app/db/master-data.js
+    when: product_count.stdout | int == 0
+
+  - name: daemon reload
+    systemd_service:
+      daemon_reload: true
+
+  - name: start and enable cart
+    service:
+      name: cart
+      state: restarted
+      enabled: yes
+
