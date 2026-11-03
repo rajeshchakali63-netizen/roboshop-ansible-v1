@@ -9,3 +9,4 @@ user_host: user.rajdaws92s.store
 cart_host: cart.rajdaws92s.store
 shipping_host: shipping.rajdaws92s.store
 payment_host: payment.rajdaws92s.store
+mysql_root_password: RoboShop@1
