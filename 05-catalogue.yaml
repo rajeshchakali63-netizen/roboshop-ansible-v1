@@ -52,6 +52,11 @@
     community.general.npm:
       path: /app
 
+  - name: copy catalogue service
+    template:
+      src: catalogue.service.j2
+      dest: /etc/systemd/system/catalogue.service
+
   - name: copy mongo repo
     copy:
       src: mongo.repo
