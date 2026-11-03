@@ -1,1 +1,53 @@
 - name: configure frontend server
+  hosts: frontend
+  become: yes
+  tasks:
+  - name: disable default nodejs
+    command: dnf module disable nodejs -y
+
+  - name: enable nodejs24
+    command: dnf module enable nodejs:24 -y
+
+  - name: install nodejs
+    dnf:
+      name: nodejs
+      state: present
+
+  - name: find the all content inside the directory
+    ansible.builtin.find:
+      paths: /usr/share/nginx/html/
+      recurse: true
+      hidden: true
+      file_type:
+    register: directory_contents
+
+  - name: print directory content
+    debug:
+      msg: "{{ directory_contents }}"
+
+  - name: Delete the discovered contents 
+    ansible.builtin.file:
+      path: "{{ item.path }}"
+      state: absent
+    loop: "{{ directory_contents.files }}"
+
+  - name: download frontend application
+    get_url:
+      url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/frontend-v4.zip
+      dest: /tmp/frontend.zip
+
+  - name: unzip frontend
+    unarchive:
+      src: /tmp/frontend.zip
+      dest: /usr/share/nginx/html/
+      remote_src: yes
+
+  - name: copy roboshop configure
+    template:
+      src: roboshop.conf.j2
+      dest: /etc/nginx/default.d/roboshop.conf
+
+  - name: restart frontend
+    service:
+      name: nginx
+      state: restarted
