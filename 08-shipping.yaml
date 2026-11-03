@@ -64,3 +64,13 @@
       src: /tmp/shipping.zip
       dest: /app
       remote_src: yes
+
+  - name: mvn version without JAVA_HOME
+    command: mvn --version
+    args:
+      chdir: /app
+    register: mvn_default
+
+  - name: print mvn version withour JAVA_HOME
+    debug:
+      msg: "{{ mvn_default.stdout_lines }}"
