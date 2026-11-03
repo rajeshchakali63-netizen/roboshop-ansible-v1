@@ -13,6 +13,12 @@
       name: nodejs
       state: present
 
+  - name: enable and start
+    service:
+      name: nginx
+      state: started
+      enabled: yes
+
   - name: Find all contents inside the directory
     ansible.builtin.find:
       paths: /usr/share/nginx/html/
