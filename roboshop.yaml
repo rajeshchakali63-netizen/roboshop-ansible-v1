@@ -4,7 +4,7 @@
   vars:
     # ansible-playbook roboshop.yaml -e "instances=['mongodb', 'redis']"
     # ansible-playbook roboshop.yaml -e "action=delete"
-    instances: ["mongodb", "redis", "mysql", "rabbitmq", "catalogue", "user", "cart"]
+    instances: ["mongodb", "redis", "mysql", "rabbitmq", "catalogue", "user", "cart", "payment", "shipping", "frontend"]
     action: create
     domain_name: rajdaws92s.store
     ami_id: ami-0055977a6e828a4f4
