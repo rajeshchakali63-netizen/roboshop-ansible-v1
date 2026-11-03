@@ -13,19 +13,19 @@
       name: nodejs
       state: present
 
-  - name: find the all content inside the directory
+  - name: Find all contents inside the directory
     ansible.builtin.find:
       paths: /usr/share/nginx/html/
       recurse: true
       hidden: true
-      file_type:
+      file_type: any
     register: directory_contents
 
   - name: print directory content
     debug:
       msg: "{{ directory_contents }}"
 
-  - name: Delete the discovered contents 
+  - name: Delete the discovered contents
     ansible.builtin.file:
       path: "{{ item.path }}"
       state: absent
