@@ -52,5 +52,5 @@
 
   - name: restart frontend
     service:
-      name: nginx
+      name: frontend
       state: restarted
