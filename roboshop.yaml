@@ -55,11 +55,12 @@
     amazon.aws.route53:
       state: absent
       zone: "{{ domain_name }}"
-      record: "{{ domain_name }}"
+      record: "{{ item }}.{{ domain_name }}"
       ttl: 1
-      type: A 
+      type: A
+    loop: "{{ instances }}"
     when: action == "delete"
-
+    
   - name: delete R53 record for frontend
     amazon.aws.route53:
       state: absent
